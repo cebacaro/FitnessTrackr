@@ -27,11 +27,65 @@ async function createUser({ username, password }) {
   }
 }
 
-async function getUser({ username, password }) {}
+async function getUser({ username, password }) {
+  const user = await getUserByUsername(username);
+  const hashedPassword = user.password;
+  const isValid = await bcrypt.compare(password, hashedPassword);
+  try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `SELECT * 
+     FROM users;`
+    );
+    if (!isValid) {
+      console.log("Invalid username and password");
+      throw {
+        name: "UserNotFoundError",
+        message: "Invalid username and password",
+      };
+    } else {
+      return user;
+    }
+  } catch (error) {
+    throw { error };
+  }
+}
 
-async function getUserById(userId) {}
+async function getUserById(userId) {
+  try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `SELECT id, username
+      FROM users
+      WHERE id = $1`,
+      [userId]
+    );
 
-async function getUserByUsername(userName) {}
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getUserByUsername(userName) {
+  try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      SELECT * 
+      FROM users 
+      WHERE username = $1;
+      `,
+      [userName]
+    );
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   createUser,

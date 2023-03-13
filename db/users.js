@@ -21,6 +21,7 @@ async function createUser({ username, password }) {
       `,
       [username, hashpassword]
     );
+    delete user.password;
     return user;
   } catch (error) {
     throw error;
@@ -28,23 +29,28 @@ async function createUser({ username, password }) {
 }
 
 async function getUser({ username, password }) {
-  const user = await getUserByUsername(username);
-  const hashedPassword = user.password;
+  const userByUsername = await getUserByUsername(username);
+  const hashedPassword = userByUsername.password;
   const isValid = await bcrypt.compare(password, hashedPassword);
   try {
     const {
       rows: [user],
     } = await client.query(
-      `SELECT * 
-     FROM users;`
+      `SELECT id, username, password 
+     FROM users
+     WHERE id=${userByUsername.id}
+     
+     `
     );
     if (!isValid) {
       console.log("Invalid username and password");
-      throw {
-        name: "UserNotFoundError",
-        message: "Invalid username and password",
-      };
+      // throw {
+      //   name: "UserNotFoundError",
+      //   message: "Invalid username and password",
+      // };
+      return null;
     } else {
+      delete user.password;
       return user;
     }
   } catch (error) {

@@ -50,13 +50,16 @@ const createFakeUserWithRoutines = async (username, numRoutines = 1) => {
   };
 };
 
-const createFakeUserWithRoutinesAndActivities = async (username, numRoutines = 1) => {
+const createFakeUserWithRoutinesAndActivities = async (
+  username,
+  numRoutines = 1
+) => {
   const { fakeUser, token } = await createFakeUserWithToken(username);
   const fakeRoutines = [];
   const fakePrivateRoutines = [];
   const fakeActivities = [];
-  const fakeRoutineActivities = [];
-  const fakePrivateRoutineActivities = [];
+  const fakeroutine_activities = [];
+  const fakePrivateroutine_activities = [];
 
   for (let i = 0; i < numRoutines; i++) {
     const fakeRoutine = await createFakePublicRoutine(fakeUser.id);
@@ -78,8 +81,8 @@ const createFakeUserWithRoutinesAndActivities = async (username, numRoutines = 1
       fakePrivateRoutine.id,
       fakeActivity.id
     );
-    fakeRoutineActivities.push(fakeRoutineActivity, fakeRoutineActivity2);
-    fakePrivateRoutineActivities.push(fakePrivateRoutineActivity);
+    fakeroutine_activities.push(fakeRoutineActivity, fakeRoutineActivity2);
+    fakePrivateroutine_activities.push(fakePrivateRoutineActivity);
   }
 
   return {
@@ -88,8 +91,8 @@ const createFakeUserWithRoutinesAndActivities = async (username, numRoutines = 1
     fakeRoutines,
     fakePrivateRoutines,
     fakeActivities,
-    fakeRoutineActivities,
-    fakePrivateRoutineActivities,
+    fakeroutine_activities,
+    fakePrivateroutine_activities,
   };
 };
 
@@ -141,7 +144,7 @@ const createFakeActivity = async (
 ) => {
   const activity = await createActivity({
     name,
-    description
+    description,
   });
   if (!activity) {
     throw new Error("createActivity didn't return an activity");

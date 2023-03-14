@@ -179,7 +179,7 @@ describe("/api/routines", () => {
   });
 
   describe("DELETE /api/routines/:routineId (**)", () => {
-    xit("Hard deletes a routine. Makes sure to delete all the routineActivities whose routine is the one being deleted.", async () => {
+    xit("Hard deletes a routine. Makes sure to delete all the routine_activities whose routine is the one being deleted.", async () => {
       // Create a routine so we can delete it
       const { fakeUser, token } = await createFakeUserWithToken("John");
       const fakeRoutine = await createFakePublicRoutine(

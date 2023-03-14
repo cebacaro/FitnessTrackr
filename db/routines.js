@@ -53,13 +53,15 @@ async function getRoutinesWithoutActivities() {
   }
 }
 
+//Lauras hints: Might need user data, might need to call anouther function using the return
 async function getAllRoutines() {
   try {
     const { rows: routines } = await client.query(
       `
       SELECT *
       FROM routines
-      JOIN routineactivities ON id=activities."routineId" 
+      JOIN routine_activities ON id=activities."routineId" 
+      
       `
     );
   } catch (error) {

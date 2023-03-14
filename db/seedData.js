@@ -7,7 +7,7 @@ async function dropTables() {
     console.log("Dropping All Tables...");
     // drop all tables, in the correct order
     await client.query(`
-      DROP TABLE IF EXISTS routineactivities;
+      DROP TABLE IF EXISTS routine_activities;
       DROP TABLE IF EXISTS routines;
       DROP TABLE IF EXISTS activities;
       DROP TABLE IF EXISTS users;
@@ -42,7 +42,7 @@ async function createTables() {
     name varchar(255) UNIQUE NOT NULL,
     goal TEXT NOT NULL
   );
-  CREATE TABLE routineactivities (
+  CREATE TABLE routine_activities (
     id SERIAL PRIMARY KEY,
     "routineId" INTEGER REFERENCES routines(id),
     "activityId" INTEGER REFERENCES activities(id),
@@ -155,14 +155,14 @@ async function createInitialRoutines() {
   console.log("Finished creating routines.");
 }
 
-async function createInitialRoutineActivities() {
+async function createInitialroutine_activities() {
   console.log("starting to create routine_activities...");
   const [bicepRoutine, chestRoutine, legRoutine, cardioRoutine] =
     await getRoutinesWithoutActivities();
   const [bicep1, bicep2, chest1, chest2, leg1, leg2, leg3] =
     await getAllActivities();
 
-  const routineActivitiesToCreate = [
+  const routine_activitiesToCreate = [
     {
       routineId: bicepRoutine.id,
       activityId: bicep1.id,
@@ -218,10 +218,10 @@ async function createInitialRoutineActivities() {
       duration: 15,
     },
   ];
-  const routineActivities = await Promise.all(
-    routineActivitiesToCreate.map(addActivityToRoutine)
+  const routine_activities = await Promise.all(
+    routine_activitiesToCreate.map(addActivityToRoutine)
   );
-  console.log("routine_activities created: ", routineActivities);
+  console.log("routine_activities created: ", routine_activities);
   console.log("Finished creating routine_activities!");
 }
 
@@ -232,7 +232,7 @@ async function rebuildDB() {
     await createInitialUsers();
     await createInitialActivities();
     await createInitialRoutines();
-    await createInitialRoutineActivities();
+    await createInitialroutine_activities();
   } catch (error) {
     console.log("Error during rebuildDB");
     throw error;

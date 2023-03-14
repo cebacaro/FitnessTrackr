@@ -14,7 +14,6 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
       `,
       [creatorId, isPublic, name, goal]
     );
-    console.log(routine);
     return routine;
   } catch (error) {
     throw error;
@@ -64,12 +63,25 @@ async function getAllRoutines() {
       
       `
     );
+    return routines;
   } catch (error) {
     throw error;
   }
 }
 
-async function getAllPublicRoutines() {}
+async function getAllPublicRoutines() {
+  try {
+    const { rows } = await client.query(`
+    SELECT * 
+    FROM routines
+    WHERE "isPublic" = true
+    `);
+    console.log(rows);
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function getAllRoutinesByUser({ username }) {}
 
@@ -95,7 +107,6 @@ async function updateRoutine({ id, ...fields }) {
     `,
         Object.values(fields)
       );
-      console.log(routine, setString);
       return routine;
     }
   } catch (error) {

@@ -31,8 +31,9 @@ router.post("/register", async (req, res, next) => {
 
     if (_user) {
       next({
-        name: "UserExistsError",
+        error: "UserExistsError",
         message: "That username already exists",
+        name: "UserExistsError",
       });
     }
 
@@ -48,7 +49,11 @@ router.post("/register", async (req, res, next) => {
 
     res.send({
       message: "Thank you for registering",
-      token,
+      token: token,
+      user: {
+        id: user.id,
+        username: user.username,
+      },
     });
   } catch (error) {
     next(error);

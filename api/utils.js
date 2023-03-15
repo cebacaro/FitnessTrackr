@@ -1,17 +1,14 @@
-const express = require("express");
-
 function requireUser(req, res, next) {
-  console.log("Require user is being called");
-
+  console.log(req.user, "req.user from requireUser function");
   if (!req.user) {
     next({
       name: "missingUserError",
-      message: "You must be Logged in",
+      message: "You must be logged in to perform this action",
     });
   }
   next();
 }
 
-module.export = {
+module.exports = {
   requireUser,
 };

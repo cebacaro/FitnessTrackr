@@ -94,6 +94,7 @@ async function getAllPublicRoutines() {
 }
 
 async function getAllRoutinesByUser({ username }) {
+  console.log(username);
   try {
     const { rows } = await client.query(
       `
@@ -105,6 +106,8 @@ async function getAllRoutinesByUser({ username }) {
       `,
       [username]
     );
+
+    console.log(rows);
 
     const routinesWithActivities = await attachActivitiesToRoutines(rows);
     return routinesWithActivities;
@@ -207,6 +210,7 @@ async function destroyRoutine(id) {
 }
 
 module.exports = {
+  createRoutine,
   getRoutineById,
   getRoutinesWithoutActivities,
   getAllRoutines,

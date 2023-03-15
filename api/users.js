@@ -1,8 +1,13 @@
 /* eslint-disable no-useless-catch */
 const express = require("express");
-const { getUserByUsername, createUser } = require("../db");
+const {
+  getUserByUsername,
+  createUser,
+  getAllRoutinesByUser,
+} = require("../db");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const { requireUser } = require("./utils");
 
 // POST /api/users/register
 router.post("/register", async (req, res, next) => {
@@ -46,7 +51,7 @@ router.post("/register", async (req, res, next) => {
       token,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 });
 
@@ -89,7 +94,36 @@ router.post("/login", async (req, res, next) => {
 });
 
 // GET /api/users/me
+router.get("/me", async (req, res, next) => {
+  try {
+    const user = await getUserByUsername(req.user.username);
+
+    if (!user) {
+      next({
+        name: "NotValidUserError",
+        message: "No user by that username",
+      });
+    }
+
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+});
 
 // GET /api/users/:username/routines
+router.get("/:username/routines", async (req, res, next) => {
+  const { username } = req.params;
+  console.log(username);
+
+  try {
+    const routines = await getAllRoutinesByUser(username);
+    console.log(routines);
+
+    res.send(routines);
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;

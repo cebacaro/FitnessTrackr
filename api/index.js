@@ -2,7 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 // GET /api/health
-router.get("/health", async (req, res, next) => {});
+router.get("/health", async (req, res, next) => {
+  res.send({
+    name: "test",
+    message: "hello there",
+  });
+});
 
 // ROUTER: /api/users
 const usersRouter = require("./users");

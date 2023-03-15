@@ -22,7 +22,7 @@ const routinesRouter = require("./routines");
 router.use("/routines", routinesRouter);
 
 // ROUTER: /api/routine_activities
-const routine_activitiesRouter = require("./routine_activities");
+const routine_activitiesRouter = require("./routineActivities");
 router.use("/routine_activities", routine_activitiesRouter);
 
 module.exports = router;

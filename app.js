@@ -1,16 +1,16 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const apiRouter = require("./index");
-const { PORT = 3000 } = process.env;
+const apiRouter = require("./api/index");
+// const { PORT = 3000 } = process.env;
 // Setup your Middleware and API Router here
 
 app.use(express.json());
 
 app.use("/api", apiRouter);
 
-app.listen(PORT, () => {
-  console.log("server is up", PORT);
+app.listen(3000, () => {
+  console.log("server is up");
 });
 
 module.exports = app;

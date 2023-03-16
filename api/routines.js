@@ -56,13 +56,13 @@ router.patch("/:routineId", requireUser, async (req, res, next) => {
 
   const updateFields = {};
 
-  if (isPublic) {
+  if (isPublic !== undefined) {
     updateFields.isPublic = isPublic;
   }
-  if (name) {
+  if (name !== undefined) {
     updateFields.name = name;
   }
-  if (goal) {
+  if (goal !== undefined) {
     updateFields.goal = goal;
   }
 
@@ -73,6 +73,12 @@ router.patch("/:routineId", requireUser, async (req, res, next) => {
         name: "RoutineDoesNotExistsError",
         message: `Routine ${routineId} does not exist`,
       });
+    } else if (_checkId.creatorId !== req.user.id) {
+      res.status(403);
+      next({
+        name: "NotAuthorError",
+        message: `User ${req.user.username} is not allowed to update ${_checkId.name}`,
+      });
     } else {
       const updatedRoutine = await updateRoutine({
         id: routineId,
@@ -82,7 +88,7 @@ router.patch("/:routineId", requireUser, async (req, res, next) => {
         res.send(updatedRoutine);
       } else {
         next({
-          name: "PatchingRoutineError",
+          name: "PatchingRoutineActivityError",
           message: "Could not update Routine",
         });
       }
@@ -97,11 +103,20 @@ router.patch("/:routineId", requireUser, async (req, res, next) => {
 
 // DELETE /api/routines/:routineId
 router.delete("/:routineId", requireUser, async (req, res, next) => {
+  const { routineId } = req.params;
+
   try {
-    const routine = await getRoutineById(req.params.routineId);
+    const routine = await getRoutineById(routineId);
     if (req.user.id === routine.creatorId) {
-      const updatedRoutine = destroyRoutine(req.params.routineId);
+      const updatedRoutine = await destroyRoutine(routineId);
+      console.log(updatedRoutine, "!!!Updated routine!!!");
       res.send(updatedRoutine);
+    } else {
+      res.status(403);
+      next({
+        name: "NotAuthorError",
+        message: `User ${req.user.username} is not allowed to delete ${routine.name}`,
+      });
     }
   } catch (error) {
     next({
@@ -112,10 +127,9 @@ router.delete("/:routineId", requireUser, async (req, res, next) => {
 });
 // POST /api/routines/:routineId/activities
 router.post("/:routineId/activities", async (req, res, next) => {
+  const { routineId } = req.params;
+  const { activityId, count, duration } = req.body;
   try {
-    const { routineId } = req.params;
-    const { activityId, count, duration } = req.body;
-
     const routineActivity = await addActivityToRoutine({
       routineId,
       activityId,
@@ -127,7 +141,7 @@ router.post("/:routineId/activities", async (req, res, next) => {
   } catch (error) {
     next({
       name: "ActivitiesError",
-      message: "activity can't be added",
+      message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
     });
   }
 });

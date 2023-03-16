@@ -188,7 +188,7 @@ async function destroyRoutine(id) {
       { id: id }
     );
 
-    routineActivitiesToBeDestroyed.map((r, idx) => {
+    routineActivitiesToBeDestroyed.map((r) => {
       destroyRoutineActivity(r.id);
     });
 

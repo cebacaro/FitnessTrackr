@@ -1,7 +1,9 @@
 const express = require("express");
 const { tr } = require("faker/lib/locales");
+
 const router = express.Router();
 const {
+  destroyRoutine,
   getAllPublicRoutines,
   createRoutine,
   getRoutineById,
@@ -93,7 +95,20 @@ router.patch("/:routineId", requireUser, async (req, res, next) => {
 });
 
 // DELETE /api/routines/:routineId
-
+router.delete("/:routineId", requireUser, async (req, res, next) => {
+  try {
+    const routine = await getRoutineById(req.params.routineId);
+    if (req.user.id === routine.creatorId) {
+      const updatedRoutine = destroyRoutine(req.params.routineId);
+      res.send(updatedRoutine);
+    }
+  } catch (error) {
+    next({
+      name: "DeleteError",
+      message: "Can't delete routine",
+    });
+  }
+});
 // POST /api/routines/:routineId/activities
 
 module.exports = router;

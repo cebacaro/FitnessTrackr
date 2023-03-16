@@ -11,11 +11,18 @@ const {
 const { requireUser } = require("./utils");
 
 // GET /api/activities/:activityId/routines
-router.get("/:activityId/routines", (req, res, next) => {
+router.get("/:activityId/routines", async (req, res, next) => {
   const { activityId } = req.params;
 
   try {
-    const routines = getPublicRoutinesByActivity({ activityId });
+    const routines = await getPublicRoutinesByActivity({ id: activityId });
+    const _checkId = await getActivityById(activityId);
+    if (!_checkId) {
+      next({
+        name: "ActivityDoesntExistError",
+        message: `Activity ${activityId} not found`,
+      });
+    }
     res.send(routines);
   } catch (error) {
     next({

@@ -8,6 +8,7 @@ const {
   createRoutine,
   getRoutineById,
   updateRoutine,
+  addActivityToRoutine,
 } = require("../db");
 const { requireUser } = require("./utils");
 
@@ -110,5 +111,25 @@ router.delete("/:routineId", requireUser, async (req, res, next) => {
   }
 });
 // POST /api/routines/:routineId/activities
+router.post("/:routineId/activities", async (req, res, next) => {
+  try {
+    const { routineId } = req.params;
+    const { activityId, count, duration } = req.body;
+
+    const routineActivity = await addActivityToRoutine({
+      routineId,
+      activityId,
+      count,
+      duration,
+    });
+
+    res.send(routineActivity);
+  } catch (error) {
+    next({
+      name: "ActivitiesError",
+      message: "activity can't be added",
+    });
+  }
+});
 
 module.exports = router;
